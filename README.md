@@ -11,7 +11,7 @@ The module directories are organised in the following way to achieve full isolat
 
 - modules > {provider name} > **environment** (stage or prod)
 
-- modules > {provider name} > {environment type} > **vpc** > main.tf (all virtual private cloud resources - subnets, ACLs, routing rules, VPNs)
+- modules > {provider name} > {environment type} > **vpc** > main.tf (all vpc resources - subnets, ACLs, routing, VPNs)
 
 - modules > {provider name} > {environment type} > **services** (service name) > **vms** > main.tf, variables.tf, outputs.tf
 
