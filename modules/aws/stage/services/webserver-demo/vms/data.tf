@@ -17,15 +17,15 @@ data "aws_ami" "ubuntu-latest" {
 
 
 # Use the aws_vpc data source to pull read-only data from the default vpc in my aws account;
-data "aws_vpc" "default" {
-    default = true						
-} 
+#data "aws_vpc" "default" {
+#    default = true						
+#} 
 
 
 # Use the aws_subnet_ids data source to look up the subnets from the default vpc;
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id 
-}
+#data "aws_subnet_ids" "default" {
+#  vpc_id = data.aws_vpc.default.id
+#}
 
 
 

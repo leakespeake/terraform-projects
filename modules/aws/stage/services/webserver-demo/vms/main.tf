@@ -14,13 +14,13 @@ locals {
 
 # EC2 INSTANCE
 module "demo_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=daf2d83"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=a2cd2a5"
 
   node_count        = local.node_count
   azs               = local.azs
   machine_ami       = data.aws_ami.ubuntu-latest.id
   aws_instance_type = "t2.micro"
-  aws_subnet_id     = data.aws_subnet_ids.default.ids
+  #aws_subnet_id     = data.aws_subnet_ids.default.ids
   key_name          = "dem-keys-2020"
 
 #bootstrap.sh - to update the apt repos, upgrade the packages, install apache / php and display a test web page
