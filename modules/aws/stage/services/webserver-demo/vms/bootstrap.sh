@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/bin/bash -e
+
+# startup script for Ubuntu instances - to update list of available packages and their versions - then upgrade installed packages to those versions
+# then install and run a simple web service for testing purposes only
+
+# base applications such as Docker CE and Python 3 should be baked into the Packer template
+# additional configuration to be done by Ansible to automate tasks specific to a nodes intended purpose
+
 echo "Installing PHP and Apache2"
 sleep 30
 sudo apt-get update && sudo apt-get -y upgrade
