@@ -1,34 +1,28 @@
-# LOCALS BLOCK - assign a name to a Terraform expression to use throughout the modules
+# LOCALS BLOCK - assign a name to a Terraform expression or value that are used throughout the modules
 locals {
-  node_count          = 2
+  node_count          = 1
   azs                 = "us-east-2a"
   
   owner               = "leakespeake"
   environment         = "stage"
-  app                 = "demo"
-  
-  service_port		    = 8080
-  access_port         = 22
+  app                 = "demo"  
 }
 
 
 # EC2 INSTANCE
 module "demo_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=a2cd2a5"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=e02dda1"
 
   node_count        = local.node_count
   azs               = local.azs
   machine_ami       = data.aws_ami.ubuntu-latest.id
   aws_instance_type = "t2.micro"
-  #aws_subnet_id     = data.aws_subnet_ids.default.ids
   key_name          = "dem-keys-2020"
+  user_data         = data.template_file.user_data.rendered
 
-#bootstrap.sh - to update the apt repos, upgrade the packages, install apache / php and display a test web page
-  user_data   = "${file("${path.module}/bootstrap.sh")}"
-  
-  owner       = local.owner
-  environment = local.environment
-  app         = local.app
+  owner             = local.owner
+  environment       = local.environment
+  app               = local.app
 
 
 # EC2 INSTANCE - KEY PAIR
@@ -36,11 +30,10 @@ module "demo_ec2" {
 
 
 # EC2 INSTANCE - SECURITY GROUP
-  security_group_name = "demo_sg"
+  security_group_name   = "demo_sg"
+  service_port1         = 8081
+  access_port           = 22
 }
-
-
-
 
 
 # ELASTIC IP

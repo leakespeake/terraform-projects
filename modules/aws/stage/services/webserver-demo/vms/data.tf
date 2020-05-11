@@ -15,6 +15,15 @@ data "aws_ami" "ubuntu-latest" {
     owners = ["099720109477"] 
 }
 
+# Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
+data "template_file" "user_data" {
+  template = file("bootstrap.sh")
+
+  vars = {
+    service_port1 = var.service_port1
+  }
+}
+
 
 # Use the aws_vpc data source to pull read-only data from the default vpc in my aws account;
 #data "aws_vpc" "default" {
