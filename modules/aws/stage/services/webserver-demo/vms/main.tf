@@ -75,7 +75,7 @@ module "demo_r53_record" {
 
 # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
 #module "demo_ebs" {
-#  source = "git@github.com:sky-uk/cd-devops-infra-source.git//terraform/modules-source/aws/ebs?ref=6658651" ## CHANGE TO LEAKESPEAKE REPO
+#  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref="
 #
 #  node_count      = "${local.node_count}"
 #  azs             = "${local.azs}"
@@ -90,7 +90,7 @@ module "demo_r53_record" {
 #
 # ELASTIC BLOCK STORE (EBS) ATTACHMENT
 #module "demo_ebs_att" {
-#  source = "git@github.com:sky-uk/cd-devops-infra-source.git//terraform/modules-source/aws/ebs_att?ref=6658651" ## CHANGE TO LEAKESPEAKE REPO
+#  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref="
 #
 #  node_count    = "${local.node_count}"
 #  volume_ids    = "${module.demo_ebs.volume_id}"

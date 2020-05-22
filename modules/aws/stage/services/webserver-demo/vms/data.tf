@@ -36,7 +36,5 @@ data "aws_subnet_ids" "default" {
 
 # Use the aws_route53_zone data source to look up a hosted dns zone
 data "aws_route53_zone" "leakespeake-com" {
-  #name = "leakespeake.com."
   zone_id = "Z00447873ABJW6QTXIUIH"
-  #vpc_id = data.aws_vpc.default.id
 }
