@@ -1,7 +1,7 @@
 # LOCALS BLOCK - assign a name to a Terraform expression or value that are used throughout the modules
 locals {
   node_count          = 1
-  azs                 = "us-east-2a"
+  azs                 = ["eu-west-2a"]                          # list multiple zones via ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
   
   owner               = "leakespeake"
   environment         = "stage"
@@ -11,10 +11,13 @@ locals {
 
 # EC2 INSTANCE
 module "demo_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=e02dda1"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=0b3c80d"
 
   node_count        = local.node_count
   azs               = local.azs
+  #aws_subnet_id     = data.aws_subnet_ids.default.ids          # lookup the default subnet ids - use this option when not specifying the private_ips in the vpc subnets
+  aws_subnet_id     = "subnet-c18c0fbb"                         # ensure this subnet is associated with the availability zone specified in azs.local
+  private_ips       = ["172.31.16.10"]                          # within range of subnet-c18c0fbb - number must match node_count - for use via private hosted zone leakespeake.com
   machine_ami       = data.aws_ami.ubuntu-latest.id
   aws_instance_type = "t2.micro"
   key_name          = "dem-keys-2020"
@@ -37,18 +40,39 @@ module "demo_ec2" {
 
 
 # ELASTIC IP
-#module "demo_eip" {
-#  source = "git@github.com:sky-uk/cd-devops-infra-source.git//terraform/modules-source/aws/eip?ref=6658651" ## CHANGE TO LEAKESPEAKE REPO
-#
-#  node_count    = "${local.node_count}"
-#  instances_ids = "${module.demo_ec2.instance_id}"
-#  
-#  owner         = "${local.owner}"
-#  environment   = "${local.environment}"
-#  app           = "${local.app}"
-#}
-#
-#
+module "demo_eip" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/eip?ref=0b3c80d"
+
+  node_count    = "${local.node_count}"
+  instances_ids = "${module.demo_ec2.instance_id}"
+ 
+  owner         = "${local.owner}"
+  environment   = "${local.environment}"
+  app           = "${local.app}"
+}
+
+
+# ROUTE 53 ZONE - only required when creating a new zone - otherwise, append new records to existing zones using the module below
+# module "demo_r53_zone" {
+#   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53zone?ref=0b3c80d"
+#   domain_name = "mydomain.com"
+# }
+
+
+# ROUTE 53 RECORD CREATION
+module "demo_r53_record" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=0b3c80d"
+
+  node_count  = "${local.node_count}"
+  node_name   = "demo"
+  zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
+  type        = "A"
+  ttl         = 300
+  dns_domain  = "leakespeake.com"
+  record_data = "${module.demo_eip.elastic_address}"
+}
+
+
 # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
 #module "demo_ebs" {
 #  source = "git@github.com:sky-uk/cd-devops-infra-source.git//terraform/modules-source/aws/ebs?ref=6658651" ## CHANGE TO LEAKESPEAKE REPO
@@ -71,18 +95,4 @@ module "demo_ec2" {
 #  node_count    = "${local.node_count}"
 #  volume_ids    = "${module.demo_ebs.volume_id}"
 #  instances_ids = "${module.demo_ec2.instance_id}"
-#}
-#
-#
-# ROUTE 53 ZONE AND RECORD CREATION
-#module "demo_r53" {
-#  source = "git@github.com:sky-uk/cd-devops-infra-source.git//terraform/modules-source/aws/route53records?ref=6658651" ## CHANGE TO LEAKESPEAKE REPO
-#
-#  node_count  = "${local.node_count}"
-#  node_name   = "demo"
-#  zone_id     = "${data.terraform_remote_state.r53zone.zone_id}"
-#  type        = "A"
-#  ttl         = 300
-#  dns_domain  = "${data.terraform_remote_state.r53zone.domain_name}"
-#  record_data = "${module.demo_ec2.ipaddress}"
 #}

@@ -24,24 +24,19 @@ data "template_file" "user_data" {
   }
 }
 
+# Use the aws_vpc data source to pull read-only data from the default vpc of the specified aws region;
+data "aws_vpc" "default" {
+    default = true						
+} 
 
-# Use the aws_vpc data source to pull read-only data from the default vpc in my aws account;
-#data "aws_vpc" "default" {
-#    default = true						
-#} 
+# Use the aws_subnet_ids data source to look up the subnets from the default vpc (within the specified aws region);
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
+}
 
-
-# Use the aws_subnet_ids data source to look up the subnets from the default vpc;
-#data "aws_subnet_ids" "default" {
-#  vpc_id = data.aws_vpc.default.id
-#}
-
-
-
-#data "terraform_remote_state" "r53zone" {
-#  backend = "consul"
-#
-#  config {
-#    path = "trecs/terraform/aws/r53zone/terraform.tfstate"
-#  }
-#}
+# Use the aws_route53_zone data source to look up a hosted dns zone
+data "aws_route53_zone" "leakespeake-com" {
+  #name = "leakespeake.com."
+  zone_id = "Z00447873ABJW6QTXIUIH"
+  #vpc_id = data.aws_vpc.default.id
+}

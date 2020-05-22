@@ -1,5 +1,5 @@
 #terraform {
-#  backend "consul" {
-#    path = "trecs/terraform/aws/ec2/test/terraform.tfstate"
+#  backend "s3" {
+#    path = "path/terraform.tfstate"
 #  }
 #}
