@@ -64,7 +64,7 @@ module "demo_r53_record" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=0b3c80d"
 
   node_count  = "${local.node_count}"
-  node_name   = "demo"
+  node_name   = "demo-leake"
   zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
   type        = "A"
   ttl         = 300
@@ -74,25 +74,25 @@ module "demo_r53_record" {
 
 
 # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
-#module "demo_ebs" {
-#  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref="
-#
-#  node_count      = "${local.node_count}"
-#  azs             = "${local.azs}"
-#  
-#  ebs_volume_size = 20
-#  
-#  owner           = "${local.owner}"
-#  environment     = "${local.environment}"
-#  app             = "${local.app}"
-#}
-#
-#
+module "demo_ebs" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=cd42087"
+
+  node_count      = "${local.node_count}"
+  azs             = "${local.azs}"
+ 
+  ebs_volume_size = 20
+ 
+  owner           = "${local.owner}"
+  environment     = "${local.environment}"
+  app             = "${local.app}"
+}
+
+
 # ELASTIC BLOCK STORE (EBS) ATTACHMENT
-#module "demo_ebs_att" {
-#  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref="
-#
-#  node_count    = "${local.node_count}"
-#  volume_ids    = "${module.demo_ebs.volume_id}"
-#  instances_ids = "${module.demo_ec2.instance_id}"
-#}
+module "demo_ebs_att" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=cd42087"
+
+  node_count    = "${local.node_count}"
+  volume_ids    = "${module.demo_ebs.volume_id}"
+  instances_ids = "${module.demo_ec2.instance_id}"
+}
