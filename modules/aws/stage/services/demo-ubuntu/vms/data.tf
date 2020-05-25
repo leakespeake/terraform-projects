@@ -16,8 +16,8 @@ data "aws_ami" "ubuntu-latest" {
 }
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
-data "template_file" "user_data" {
-  template = file("bootstrap.sh")
+data "template_file" "user_data_ubuntu" {
+  template = file("${path.module}/bootstrap-ubuntu.sh")
 
   vars = {
     service_port1 = var.service_port1

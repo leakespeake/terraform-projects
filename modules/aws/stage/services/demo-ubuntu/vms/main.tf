@@ -11,7 +11,8 @@ locals {
 
 # EC2 INSTANCE
 module "demo_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=0b3c80d"
+  source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/ec2"
+  #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=0b3c80d"
 
   node_count        = local.node_count
   azs               = local.azs
@@ -21,7 +22,7 @@ module "demo_ec2" {
   machine_ami       = data.aws_ami.ubuntu-latest.id
   aws_instance_type = "t2.micro"
   key_name          = "dem-keys-2020"
-  user_data         = data.template_file.user_data.rendered
+  user_data         = data.template_file.user_data_ubuntu.rendered
 
   owner             = local.owner
   environment       = local.environment
@@ -59,40 +60,41 @@ module "demo_eip" {
 # }
 
 
-# ROUTE 53 RECORD CREATION
-module "demo_r53_record" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=0b3c80d"
+# # ROUTE 53 RECORD CREATION
+# module "demo_r53_record" {
+#   source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/route53records"
+#   #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=0b3c80d"
 
-  node_count  = "${local.node_count}"
-  node_name   = "demo-leake"
-  zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
-  type        = "A"
-  ttl         = 300
-  dns_domain  = "leakespeake.com"
-  record_data = "${module.demo_eip.elastic_address}"
-}
-
-
-# ELASTIC BLOCK STORE (EBS) VOLUME CREATION
-module "demo_ebs" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=cd42087"
-
-  node_count      = "${local.node_count}"
-  azs             = "${local.azs}"
- 
-  ebs_volume_size = 20
- 
-  owner           = "${local.owner}"
-  environment     = "${local.environment}"
-  app             = "${local.app}"
-}
+#   node_count  = "${local.node_count}"
+#   node_name   = "demo-leake"
+#   zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
+#   type        = "A"
+#   ttl         = 300
+#   dns_domain  = "leakespeake.com"
+#   record_data = "${module.demo_eip.elastic_address}"
+# }
 
 
-# ELASTIC BLOCK STORE (EBS) ATTACHMENT
-module "demo_ebs_att" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=cd42087"
-
-  node_count    = "${local.node_count}"
-  volume_ids    = "${module.demo_ebs.volume_id}"
-  instances_ids = "${module.demo_ec2.instance_id}"
-}
+# # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
+# module "demo_ebs" {
+#   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=cd42087"
+#
+#   node_count      = "${local.node_count}"
+#   azs             = "${local.azs}"
+#
+#   ebs_volume_size = 10
+#
+#   owner           = "${local.owner}"
+#   environment     = "${local.environment}"
+#   app             = "${local.app}"
+# }
+#
+#
+# # ELASTIC BLOCK STORE (EBS) ATTACHMENT
+# module "demo_ebs_att" {
+#   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=cd42087"
+#
+#   node_count    = "${local.node_count}"
+#   volume_ids    = "${module.demo_ebs.volume_id}"
+#   instances_ids = "${module.demo_ec2.instance_id}"
+# }

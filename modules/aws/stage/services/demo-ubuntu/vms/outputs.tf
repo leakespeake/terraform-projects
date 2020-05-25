@@ -12,13 +12,13 @@ output "private_ips" {
 }
 
 output "public_ips" {
- value = "${module.demo_eip.*.elastic_address}"
+ value = "${module.demo_eip.elastic_address}"
 }
 
-output "hostnames" {
- value = "${module.demo_r53_record.hostnames}"
-}
+# output "hostnames" {
+#  value = "${module.demo_r53_record.hostnames}"
+# }
 
-output "volume_id" {
- value = "${module.demo_ebs.volume_id}"
-}
+# output "volume_id" {
+#  value = "${module.demo_ebs.volume_id}"
+# }
