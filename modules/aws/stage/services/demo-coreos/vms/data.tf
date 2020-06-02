@@ -1,11 +1,11 @@
-# Use the latest available public ami for ubuntu 18.04
+# Use the latest available public ami for coreos
 # For production services, state specific versions - or use own packer templates via... owners = ["self"] etc
-data "aws_ami" "ubuntu-latest" {
+data "aws_ami" "coreos-stable-latest" {
   most_recent = true
   
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["CoreOS-stable-*"]
   }
   
   filter {
@@ -23,7 +23,7 @@ data "aws_ami" "ubuntu-latest" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] 
+  owners = ["595879546273"] 
 }
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)

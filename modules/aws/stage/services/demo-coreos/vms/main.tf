@@ -5,12 +5,12 @@ locals {
   
   owner               = "leakespeake"
   environment         = "stage"
-  app                 = "demo-ubuntu"  
+  app                 = "demo-coreos"  
 }
 
 
 # EC2 INSTANCE
-module "demo_ubuntu_ec2" {
+module "demo_coreos_ec2" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=309bc0d"
 
   node_count        = local.node_count
@@ -18,7 +18,7 @@ module "demo_ubuntu_ec2" {
   #aws_subnet_id     = data.aws_subnet_ids.default.ids          # lookup the default subnet ids - use this option when not specifying the private_ips in the vpc subnets
   aws_subnet_id     = "subnet-c18c0fbb"                         # ensure this subnet is associated with the availability zone specified in azs.local
   private_ips       = ["172.31.16.10"]                          # within range of subnet-c18c0fbb - number must match node_count - for use via private hosted zone leakespeake.com
-  machine_ami       = data.aws_ami.ubuntu-latest.id
+  machine_ami       = data.aws_ami.coreos-stable-latest.id
   aws_instance_type = "t2.micro"
   key_name          = "dem-keys-2020"
   user_data         = data.template_file.user-data.rendered
@@ -45,7 +45,7 @@ module "demo_eip" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/eip?ref=0b3c80d"
 
   node_count    = "${local.node_count}"
-  instances_ids = "${module.demo_ubuntu_ec2.instance_id}"
+  instances_ids = "${module.demo_coreos_ec2.instance_id}"
  
   owner         = "${local.owner}"
   environment   = "${local.environment}"
@@ -53,7 +53,7 @@ module "demo_eip" {
 }
 
 
-# ROUTE 53 ZONE - only required when creating a new zone - otherwise, append new records to existing zones using the module below
+# # ROUTE 53 ZONE - only required when creating a new zone - otherwise, append new records to existing zones using the module below
 # module "demo_r53_zone" {
 #   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53zone?ref=0b3c80d"
 #   domain_name = "mydomain.com"
@@ -65,7 +65,7 @@ module "demo_r53_record" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=639722f"
 
   node_count  = "${local.node_count}"
-  node_name   = "demo-ubuntu"
+  node_name   = "demo-coreos"
   zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
   type        = "A"
   ttl         = 300
@@ -95,5 +95,5 @@ module "demo_ebs_att" {
 
   node_count    = "${local.node_count}"
   volume_ids    = "${module.demo_ebs.volume_id}"
-  instances_ids = "${module.demo_ubuntu_ec2.instance_id}"
+  instances_ids = "${module.demo_coreos_ec2.instance_id}"
 }

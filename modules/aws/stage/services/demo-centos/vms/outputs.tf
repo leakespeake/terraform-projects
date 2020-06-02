@@ -1,14 +1,14 @@
 output "image_id" {
-  value       = data.aws_ami.ubuntu-latest.id
-  description = "The latest Ubuntu ami image id"
+  value       = data.aws_ami.centos-latest.id
+  description = "The latest centos7 ami image id"
 }
 
 output "instance_ids" {
- value = "${module.demo_ubuntu_ec2.*.instance_id}"
+ value = "${module.demo_centos_ec2.*.instance_id}"
 }
 
 output "private_ips" {
- value = "${module.demo_ubuntu_ec2.*.private_ip}"
+ value = "${module.demo_centos_ec2.*.private_ip}"
 }
 
 output "public_ips" {

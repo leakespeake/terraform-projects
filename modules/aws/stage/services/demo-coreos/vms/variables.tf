@@ -1,6 +1,6 @@
 variable "os_distro" {
   description = "Choose centos coreos or ubuntu to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
-  default     = "ubuntu"
+  default     = "coreos"
 }
 
 variable "service_port1" {
