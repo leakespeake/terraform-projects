@@ -1,5 +1,5 @@
-# Use the latest available public ami for ubuntu 18.04
-# For production services, state specific versions - or use own packer templates via... owners = ["self"] etc
+# For stage services, use the latest available public ami for ubuntu 18.04
+# For production services, state specific versions or use own packer template - owners = ["self"]
 data "aws_ami" "ubuntu-latest" {
   most_recent = true
   

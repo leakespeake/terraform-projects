@@ -1,5 +1,5 @@
-# Use the latest available public ami for coreos
-# For production services, state specific versions - or use own packer templates via... owners = ["self"] etc
+# Use the latest available public ami for coreos (stable)
+# For production services, state specific versions (packer templates unrequired - docker pre-installed)
 data "aws_ami" "coreos-stable-latest" {
   most_recent = true
   

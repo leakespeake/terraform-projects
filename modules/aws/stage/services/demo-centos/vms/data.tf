@@ -1,5 +1,5 @@
-# Use the latest available public ami for centos7
-# For production services, state specific versions - or use own packer templates via... owners = ["self"] etc
+# For stage services, use the latest available public ami for centos 7
+# For production services, state specific versions or use own packer template - owners = ["self"]
 data "aws_ami" "centos-latest" {
   most_recent = true
   
