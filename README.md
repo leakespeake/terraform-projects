@@ -1,3 +1,4 @@
+![tf](https://user-images.githubusercontent.com/45919758/85199891-dc84bf00-b2ea-11ea-8526-683ae893fe50.png)
 # terraform-projects
 Various projects deployed via Terraform to vSphere, AWS and GCP. Each project module, whether stage or prod, calls its associated *source module* via the **terraform-reusable-modules** repository.
 
