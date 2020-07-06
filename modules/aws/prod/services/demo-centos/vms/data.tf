@@ -1,10 +1,10 @@
-# For stage services, use the latest available public ami for ubuntu 20.04
+# For stage services, use the latest available public ami for centos 8
 # For production services, state specific versions or use own packer template - owners = ["self"]
-data "aws_ami" "packer-ubuntu-docker-ce" {
+data "aws_ami" "packer-centos-docker-ce" {
   
   filter {
     name   = "name"
-    values = ["packer-aws-ubuntu-20-04 1593858290"]
+    values = ["packer-aws-centos-8 1593857629"]
   }
   
   filter {
