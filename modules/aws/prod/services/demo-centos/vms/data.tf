@@ -30,8 +30,9 @@ data "template_file" "user-data" {
   template = file("${path.module}/bootstrap-${var.os_distro}.sh")
 
   vars = {
-    access_port   = var.access_port
-    service_port1 = var.service_port1
+    access_port     = var.access_port
+    service_port1   = var.service_port1
+    docker_api_port = var.docker_api_port
   }
 }
 

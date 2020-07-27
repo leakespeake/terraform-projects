@@ -11,7 +11,7 @@ locals {
 
 # EC2 INSTANCE
 module "demo_prod_ubuntu_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=309bc0d"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=4528c2b"
 
   node_count        = local.node_count
   azs               = local.azs
@@ -37,6 +37,7 @@ module "demo_prod_ubuntu_ec2" {
   security_group_name   = "demo_prod_sg"
   service_port1         = 8081
   access_port           = 22
+  docker_api_port       = 2376
 }
 
 

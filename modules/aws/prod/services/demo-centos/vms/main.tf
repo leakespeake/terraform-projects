@@ -37,6 +37,7 @@ module "demo_prod_centos_ec2" {
   security_group_name   = "demo_prod_sg"
   service_port1         = 8081
   access_port           = 22
+  docker_api_port       = 2376
 }
 
 

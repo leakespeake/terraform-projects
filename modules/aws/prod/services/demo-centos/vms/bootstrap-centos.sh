@@ -19,6 +19,7 @@ sudo yum update -y && yum upgrade -y
 
 sudo yum -y install firewalld
 sudo firewall-offline-cmd --add-port=${access_port}/tcp
+sudo firewall-offline-cmd --add-port=${docker_api_port}/tcp
 sudo firewall-offline-cmd --add-port=${service_port1}/tcp
 sudo systemctl enable firewalld
 sudo systemctl start firewalld
