@@ -18,6 +18,9 @@ sleep 10
 echo "UPDATE AND UPGRADE"
 sudo apt-get update && sudo apt-get -y upgrade
 
+echo "INSTALL NETWORK TOOLS"
+sudo apt-get install -y net-tools
+
 # Uncomplicated FireWall (UFW) to control iptables - /etc/ufw/ufw.conf - sudo ufw status numbered
 echo "ADD ACLs TO UFW THEN ENABLE IT"
 sudo ufw allow from 92.238.177.185/32 to any port ${access_port}
