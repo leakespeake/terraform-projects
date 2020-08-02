@@ -29,6 +29,17 @@ sudo ufw allow ${service_port1}/tcp
 
 sudo sed -i 's/no/yes/' /etc/ufw/ufw.conf
 
+# ensure the Docker daemon is available via any network interface on port 2376 (but restricted to my source public IP via UFW and the EC2 Security Group)
+echo "ENABLE REMOTE DOCKER API"
+sudo mkdir /etc/systemd/system/docker.service.d
+sudo tee /etc/systemd/system/docker.service.d/override.conf << EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+
 echo "INSTALL WEB APPS"
 sudo apt-get install -y php libapache2-mod-php
 sudo sed -i "s/80/${service_port1}/" /etc/apache2/ports.conf

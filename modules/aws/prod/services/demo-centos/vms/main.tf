@@ -11,7 +11,7 @@ locals {
 
 # EC2 INSTANCE
 module "demo_prod_centos_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=4528c2b"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=e3e578e"
 
   node_count        = local.node_count
   azs               = local.azs
