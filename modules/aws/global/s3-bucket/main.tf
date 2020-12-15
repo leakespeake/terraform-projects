@@ -1,6 +1,6 @@
 # Allow any Terraform 13.x version - show via; terraform version
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 0.14"
 }
 
 # Set the provider as AWS and allow any 2.x version - show via; terraform version

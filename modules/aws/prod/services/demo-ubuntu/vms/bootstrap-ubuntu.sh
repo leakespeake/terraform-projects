@@ -23,8 +23,8 @@ sudo apt-get install -y net-tools
 
 # Uncomplicated FireWall (UFW) to control iptables - /etc/ufw/ufw.conf - sudo ufw status numbered
 echo "ADD ACLs TO UFW THEN ENABLE IT"
-sudo ufw allow from 92.238.177.185/32 to any port ${access_port}
-sudo ufw allow from 92.238.177.185/32 to any port ${docker_api_port}
+sudo ufw allow from 92.238.177.233/32 to any port ${access_port}
+sudo ufw allow from 92.238.177.233/32 to any port ${docker_api_port}
 sudo ufw allow ${service_port1}/tcp
 
 sudo sed -i 's/no/yes/' /etc/ufw/ufw.conf
