@@ -2,8 +2,13 @@
 # terraform-projects
 Various projects deployed via Terraform to vSphere, AWS and GCP. 
 
-Each project module, whether stage or prod, calls its associated *source module* via the **terraform-reusable-modules** repository.
+Each project module, whether stage or prod, calls its associated *source module* via the **terraform-reusable-modules** repository. This source repo uses tags that reflect the version of Terraform that it is currently compatible for. These tags can be used as the source ref our **terraform-projects** root modules - for example;
 
+```
+module "demo_prod_ubuntu_ec2" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=v.0.14.2"
+```
+Deployment code in this repo, whether stage or production, have an immediate visual reference to the Terraform version they were written for at the last commit.
 ___
 
 **Directory Structure**
