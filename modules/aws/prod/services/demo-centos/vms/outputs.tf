@@ -4,21 +4,21 @@ output "image_id" {
 }
 
 output "instance_ids" {
- value = "${module.demo_prod_centos_ec2.*.instance_id}"
+ value = module.demo_prod_centos_ec2.*.instance_id
 }
 
 output "private_ips" {
- value = "${module.demo_prod_centos_ec2.*.private_ip}"
+ value = module.demo_prod_centos_ec2.*.private_ip
 }
 
 output "public_ips" {
- value = "${module.demo_prod_eip.elastic_address}"
+ value = module.demo_prod_eip.elastic_address
 }
 
 output "hostnames" {
- value = "${module.demo_prod_r53_record.hostnames}"
+ value = module.demo_prod_r53_record.hostnames
 }
 
 output "volume_id" {
- value = "${module.demo_prod_ebs.volume_id}"
+ value = module.demo_prod_ebs.volume_id
 }
