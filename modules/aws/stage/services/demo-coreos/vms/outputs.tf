@@ -4,21 +4,21 @@ output "image_id" {
 }
 
 output "instance_ids" {
- value = "${module.demo_coreos_ec2.*.instance_id}"
+ value = module.demo_coreos_stg_ec2.*.instance_id
 }
 
 output "private_ips" {
- value = "${module.demo_coreos_ec2.*.private_ip}"
+ value = module.demo_coreos_stg_ec2.*.private_ip
 }
 
 output "public_ips" {
- value = "${module.demo_eip.elastic_address}"
+ value = module.demo_coreos_stg_eip.elastic_address
 }
 
 output "hostnames" {
- value = "${module.demo_r53_record.hostnames}"
+ value = module.demo_coreos_stg_r53_record.hostnames
 }
 
 output "volume_id" {
- value = "${module.demo_ebs.volume_id}"
+ value = module.demo_coreos_stg_ebs.volume_id
 }

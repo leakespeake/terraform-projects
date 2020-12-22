@@ -18,12 +18,27 @@ sleep 10
 echo "UPDATE AND UPGRADE"
 sudo apt-get update && sudo apt-get -y upgrade
 
+echo "INSTALL NETWORK TOOLS"
+sudo apt-get install -y net-tools
+
 # Uncomplicated FireWall (UFW) to control iptables - /etc/ufw/ufw.conf - sudo ufw status numbered
 echo "ADD ACLs TO UFW THEN ENABLE IT"
-sudo ufw allow from 92.238.177.185/32 to any port ${access_port}
+sudo ufw allow from 92.238.177.233/32 to any port ${access_port}
+sudo ufw allow from 92.238.177.233/32 to any port ${docker_api_port}
 sudo ufw allow ${service_port1}/tcp
 
 sudo sed -i 's/no/yes/' /etc/ufw/ufw.conf
+
+# ensure the Docker daemon is available via any network interface on port 2376 (but restricted to my source public IP via UFW and the EC2 Security Group)
+echo "ENABLE REMOTE DOCKER API"
+sudo mkdir /etc/systemd/system/docker.service.d
+sudo tee /etc/systemd/system/docker.service.d/override.conf << EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
 
 echo "INSTALL WEB APPS"
 sudo apt-get install -y php libapache2-mod-php

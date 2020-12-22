@@ -1,11 +1,12 @@
-# For stage services, use the latest available public ami for centos 7
+# For stage services, use the latest available public ami for centos 8 as per;
+# data "aws_ami" "centos-latest" {
+# most_recent = true
 # For production services, state specific versions or use own packer template - owners = ["self"]
-data "aws_ami" "centos-latest" {
-  most_recent = true
+data "aws_ami" "packer-centos-docker-ce" {
   
   filter {
     name   = "name"
-    values = ["CentOS Linux 7 x86_64 HVM EBS *"]
+    values = ["packer-aws-centos-8 1593857629"]
   }
   
   filter {
@@ -23,7 +24,7 @@ data "aws_ami" "centos-latest" {
     values = ["hvm"]
   }
 
-  owners = ["679593333241"] 
+  owners = ["self"] 
 }
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
@@ -31,8 +32,9 @@ data "template_file" "user-data" {
   template = file("${path.module}/bootstrap-${var.os_distro}.sh")
 
   vars = {
-    access_port   = var.access_port
-    service_port1 = var.service_port1
+    access_port     = var.access_port
+    service_port1   = var.service_port1
+    docker_api_port = var.docker_api_port
   }
 }
 

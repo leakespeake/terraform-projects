@@ -1,11 +1,12 @@
-# For stage services, use the latest available public ami for ubuntu 18.04
+# For stage services, use the latest available public ami for ubuntu 20.04 as per;
+# data "aws_ami" "ubuntu-latest" {
+# most_recent = true
 # For production services, state specific versions or use own packer template - owners = ["self"]
-data "aws_ami" "ubuntu-latest" {
-  most_recent = true
+data "aws_ami" "packer-ubuntu-docker-ce" {
   
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["packer-aws-ubuntu-20-04 1593858290"]
   }
   
   filter {
@@ -23,7 +24,7 @@ data "aws_ami" "ubuntu-latest" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] 
+  owners = ["self"] 
 }
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
@@ -33,6 +34,7 @@ data "template_file" "user-data" {
   vars = {
     access_port   = var.access_port
     service_port1 = var.service_port1
+    docker_api_port = var.docker_api_port
   }
 }
 
