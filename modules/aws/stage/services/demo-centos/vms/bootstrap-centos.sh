@@ -19,12 +19,25 @@ sudo yum update -y && yum upgrade -y
 
 sudo yum -y install firewalld
 sudo firewall-offline-cmd --add-port=${access_port}/tcp
+sudo firewall-offline-cmd --add-port=${docker_api_port}/tcp
 sudo firewall-offline-cmd --add-port=${service_port1}/tcp
 sudo systemctl enable firewalld
 sudo systemctl start firewalld
 
 sleep 10
 
+# ensure the Docker daemon is available via any network interface on port 2376 (but restricted to my source public IP via firewalld and the EC2 Security Group)
+echo "ENABLE REMOTE DOCKER API"
+sudo mkdir /etc/systemd/system/docker.service.d
+sudo tee /etc/systemd/system/docker.service.d/override.conf << EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://0.0.0.0:2376
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+
+echo "INSTALL WEB APPS"
 sudo yum -y install httpd
 sudo systemctl start httpd
 sudo systemctl enable httpd

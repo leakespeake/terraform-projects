@@ -1,4 +1,4 @@
-# Use the latest available public ami for coreos (stable)
+# For stage services, use the latest available public ami for coreos (stable)
 # For production services, state specific versions (packer templates unrequired - docker pre-installed)
 data "aws_ami" "coreos-stable-latest" {
   most_recent = true
@@ -23,7 +23,7 @@ data "aws_ami" "coreos-stable-latest" {
     values = ["hvm"]
   }
 
-  owners = ["595879546273"] 
+  owners = ["679593333241"] 
 }
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)

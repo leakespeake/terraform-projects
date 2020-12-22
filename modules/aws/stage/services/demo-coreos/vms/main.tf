@@ -4,14 +4,14 @@ locals {
   azs                 = ["eu-west-2a"]                          # list multiple zones via ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
   
   owner               = "leakespeake"
-  environment         = "stage"
+  environment         = "stg"
   app                 = "demo-coreos"  
 }
 
 
 # EC2 INSTANCE
-module "demo_coreos_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=309bc0d"
+module "demo_coreos_stg_ec2" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=v.0.14.2"
 
   node_count        = local.node_count
   azs               = local.azs
@@ -41,59 +41,59 @@ module "demo_coreos_ec2" {
 
 
 # ELASTIC IP
-module "demo_eip" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/eip?ref=0b3c80d"
+module "demo_coreos_stg_eip" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/eip?ref=v.0.14.2"
 
-  node_count    = "${local.node_count}"
-  instances_ids = "${module.demo_coreos_ec2.instance_id}"
+  node_count    = local.node_count
+  instances_ids = module.demo_coreos_stg_ec2.instance_id
  
-  owner         = "${local.owner}"
-  environment   = "${local.environment}"
-  app           = "${local.app}"
+  owner         = local.owner
+  environment   = local.environment
+  app           = local.app
 }
 
 
 # # ROUTE 53 ZONE - only required when creating a new zone - otherwise, append new records to existing zones using the module below
 # module "demo_r53_zone" {
-#   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53zone?ref=0b3c80d"
+#   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53zone?ref=v.0.14.2"
 #   domain_name = "mydomain.com"
 # }
 
 
 # ROUTE 53 RECORD CREATION
-module "demo_r53_record" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=639722f"
+module "demo_coreos_stg_r53_record" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=v.0.14.2"
 
-  node_count  = "${local.node_count}"
+  node_count  = local.node_count
   node_name   = "demo-coreos"
-  zone_id     = "${data.aws_route53_zone.leakespeake-com.zone_id}"
+  zone_id     = data.aws_route53_zone.leakespeake-com.zone_id
   type        = "A"
   ttl         = 300
   dns_domain  = "leakespeake.com"
-  record_data = "${module.demo_eip.elastic_address}"
+  record_data = module.demo_coreos_stg_eip.elastic_address
 }
 
 
 # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
-module "demo_ebs" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=cd42087"
+module "demo_coreos_stg_ebs" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=v.0.14.2"
 
-  node_count      = "${local.node_count}"
-  azs             = "${local.azs}"
+  node_count      = local.node_count
+  azs             = local.azs
 
   ebs_volume_size = 10
 
-  owner           = "${local.owner}"
-  environment     = "${local.environment}"
-  app             = "${local.app}"
+  owner           = local.owner
+  environment     = local.environment
+  app             = local.app
 }
 
 
 # ELASTIC BLOCK STORE (EBS) ATTACHMENT
-module "demo_ebs_att" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=cd42087"
+module "demo_coreos_stg_att" {
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=v.0.14.2"
 
-  node_count    = "${local.node_count}"
-  volume_ids    = "${module.demo_ebs.volume_id}"
-  instances_ids = "${module.demo_coreos_ec2.instance_id}"
+  node_count    = local.node_count
+  volume_ids    = module.demo_coreos_stg_ebs.volume_id
+  instances_ids = module.demo_coreos_stg_ec2.instance_id
 }

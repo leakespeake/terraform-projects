@@ -4,13 +4,19 @@ variable "os_distro" {
 }
 
 variable "service_port1" {
-  description = "The port"
+  description = "The first port intended to allow access to the running service - add additional as required _port2, _port3 etc"
   type        = number
   default     = 8080
 }
 
 variable "access_port" {
-  description = "The port"
+  description = "SSH"
   type        = number
   default     = 22
+}
+
+variable "docker_api_port" {
+  description = "The remote Docker API - allowing comms to the Docker daemon"
+  type        = number
+  default     = 2376
 }
