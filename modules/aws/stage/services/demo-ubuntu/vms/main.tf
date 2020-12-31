@@ -11,7 +11,7 @@ locals {
 
 # EC2 INSTANCE
 module "demo_stg_ubuntu_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=v.0.14.2"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=1d0d723"
 
   node_count        = local.node_count
   azs               = local.azs
@@ -23,6 +23,7 @@ module "demo_stg_ubuntu_ec2" {
   key_name          = "dem-keys-2020"
   user_data         = data.template_file.user-data.rendered
   os_distro         = var.os_distro
+  file_ext          = var.file_ext
 
   owner             = local.owner
   environment       = local.environment

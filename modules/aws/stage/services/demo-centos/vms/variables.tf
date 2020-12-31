@@ -1,7 +1,12 @@
 # Choose "centos", "coreos" or "ubuntu" - correctly named bootstrap-{os}.sh must exist in root module directory
 variable "os_distro" {
-  description = "Choose centos coreos or ubuntu to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
+  description = "Choose centos fcos or ubuntu to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
   default     = "centos"
+}
+
+variable "file_ext" {
+  description = "Choose sh or yaml to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
+  default     = "sh"
 }
 
 variable "service_port1" {
