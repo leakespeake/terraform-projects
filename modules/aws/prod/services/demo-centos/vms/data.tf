@@ -27,7 +27,7 @@ data "aws_ami" "packer-centos-docker-ce" {
 
 # Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
 data "template_file" "user-data" {
-  template = file("${path.module}/bootstrap-${var.os_distro}.sh")
+  template = file("${path.module}/bootstrap-${var.os_distro}.${var.file_ext}")
 
   vars = {
     access_port     = var.access_port

@@ -1,11 +1,11 @@
 variable "os_distro" {
-  description = "Choose centos coreos or ubuntu to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
-  default     = "centos"
+  description = "Choose centos fcos or ubuntu to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
+  default     = "fcos"
 }
 
 variable "file_ext" {
   description = "Choose sh or yaml to load the appropriate template file for variable interpolation of bootstrap-{os}.sh"
-  default     = "sh"
+  default     = "yaml"
 }
 
 variable "service_port1" {
