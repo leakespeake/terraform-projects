@@ -1,11 +1,16 @@
-# For stage services, use the latest available public ami for coreos (stable)
+# For stage services, use the latest available public ami for fedora coreos (stable)
 # For production services, state specific versions (packer templates unrequired - docker pre-installed)
-data "aws_ami" "coreos-stable-latest" {
+data "aws_ami" "fcos-stable-latest" {
   most_recent = true
   
   filter {
     name   = "name"
-    values = ["CoreOS-stable-*"]
+    values = ["fedora-coreos-*"]
+  }
+
+  filter {
+    name   = "description"
+    values = ["Fedora CoreOS stable*"]
   }
   
   filter {
@@ -23,15 +28,20 @@ data "aws_ami" "coreos-stable-latest" {
     values = ["hvm"]
   }
 
-  owners = ["679593333241"] 
+  owners = ["125523088429"] 
 }
 
-# Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
-data "template_file" "user-data" {
-  template = file("${path.module}/bootstrap-${var.os_distro}.sh")
+# Use the ct_config data source to read the yaml config and transpile as ignition json format - to be interpreted by fedora coreos 
+data "ct_config" "boot_config" {
+  content = data.template_file.fcos.rendered
+  strict = true
+  pretty_print = true
+}
 
+# Load the contents of the template file (bootstrap-fcos.yaml) and state the variables for interpolation within the template (DRY)
+data "template_file" "fcos" {
+  template = file("${path.module}/bootstrap-${var.os_distro}.${var.file_ext}")
   vars = {
-    access_port   = var.access_port
     service_port1 = var.service_port1
   }
 }

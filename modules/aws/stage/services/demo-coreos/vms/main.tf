@@ -5,24 +5,26 @@ locals {
   
   owner               = "leakespeake"
   environment         = "stg"
-  app                 = "demo-coreos"  
+  app                 = "demo-fedora-coreos"  
 }
 
 
 # EC2 INSTANCE
 module "demo_coreos_stg_ec2" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=v.0.14.2"
+  #source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/ec2"
+  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=1d0d723"
 
   node_count        = local.node_count
   azs               = local.azs
   #aws_subnet_id     = data.aws_subnet_ids.default.ids          # lookup the default subnet ids - use this option when not specifying the private_ips in the vpc subnets
   aws_subnet_id     = "subnet-c18c0fbb"                         # ensure this subnet is associated with the availability zone specified in azs.local
   private_ips       = ["172.31.16.10"]                          # within range of subnet-c18c0fbb - number must match node_count - for use via private hosted zone leakespeake.com
-  machine_ami       = data.aws_ami.coreos-stable-latest.id
+  machine_ami       = data.aws_ami.fcos-stable-latest.id
   aws_instance_type = "t2.micro"
   key_name          = "dem-keys-2020"
-  user_data         = data.template_file.user-data.rendered
+  user_data         = data.ct_config.boot_config.rendered       # convert the boot config in yaml to the ignition config in json via ct (config transpiler)
   os_distro         = var.os_distro
+  file_ext          = var.file_ext
 
   owner             = local.owner
   environment       = local.environment
@@ -65,7 +67,7 @@ module "demo_coreos_stg_r53_record" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=v.0.14.2"
 
   node_count  = local.node_count
-  node_name   = "demo-coreos"
+  node_name   = "demo-fedora-coreos"
   zone_id     = data.aws_route53_zone.leakespeake-com.zone_id
   type        = "A"
   ttl         = 300
@@ -89,11 +91,11 @@ module "demo_coreos_stg_ebs" {
 }
 
 
-# ELASTIC BLOCK STORE (EBS) ATTACHMENT
-module "demo_coreos_stg_att" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=v.0.14.2"
-
-  node_count    = local.node_count
-  volume_ids    = module.demo_coreos_stg_ebs.volume_id
-  instances_ids = module.demo_coreos_stg_ec2.instance_id
-}
+## ELASTIC BLOCK STORE (EBS) ATTACHMENT
+#module "demo_coreos_stg_att" {
+#  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=v.0.14.2"
+#
+#  node_count    = local.node_count
+#  volume_ids    = module.demo_coreos_stg_ebs.volume_id
+#  instances_ids = module.demo_coreos_stg_ec2.instance_id
+#}
