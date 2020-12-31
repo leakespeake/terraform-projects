@@ -1,5 +1,5 @@
 output "image_id" {
-  value       = data.aws_ami.coreos-stable-latest.id
+  value       = data.aws_ami.fcos-stable-latest.id
   description = "The latest stable CoreOS ami image id"
 }
 
