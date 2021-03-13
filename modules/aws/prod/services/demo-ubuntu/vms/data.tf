@@ -25,17 +25,6 @@ data "aws_ami" "packer-ubuntu-docker-ce" {
   owners = ["self"] 
 }
 
-# Load the contents of the template file (bootstrap.sh) and state the variables for interpolation within the template (DRY)
-data "template_file" "user-data" {
-  template = file("${path.module}/bootstrap-${var.os_distro}.${var.file_ext}")
-
-  vars = {
-    access_port   = var.access_port
-    service_port1 = var.service_port1
-    docker_api_port = var.docker_api_port
-  }
-}
-
 # Use the aws_vpc data source to pull read-only data from the default vpc of the specified aws region;
 data "aws_vpc" "default" {
     default = true						
@@ -46,7 +35,4 @@ data "aws_subnet_ids" "default" {
   vpc_id = data.aws_vpc.default.id
 }
 
-# Use the aws_route53_zone data source to look up a hosted dns zone
-data "aws_route53_zone" "leakespeake-com" {
-  zone_id = "Z00447873ABJW6QTXIUIH"
-}
+# The aws_route53_zone data source for the zone_id exists in the source module - only intend to add records to leakespeake.com

@@ -3,9 +3,10 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
-    template = {
-      source = "hashicorp/template"
-    }
   }
   required_version = ">= 0.14"
+}
+
+provider "aws" {
+ region = var.region
 }
