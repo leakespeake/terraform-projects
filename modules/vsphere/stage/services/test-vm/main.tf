@@ -8,7 +8,9 @@ module "ansible-test" {
 
   network           = "10.2.2.0/24_stg"
   
-  ipv4              = ["10.2.2.80", "10.2.2.81"]
+  ipv4              = ["10.2.2.80"]
   
   ipv4_gateway      = "10.2.2.1"
+
+  template          = "ubuntu-server-20-04-2-20211008T070831Z"
 }

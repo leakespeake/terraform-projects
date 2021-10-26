@@ -1,7 +1,8 @@
-# LOCALS BLOCK - assign a name to a Terraform expression or value that are used throughout the modules
+# Assign a name to Terraform expressions or values that are used throughout the modules to avoid duplication
 locals {
-  node_count          = 1
-  azs                 = ["eu-west-2a"]                          # list multiples via ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
+  node_count          = 3
+  #azs                 = ["eu-west-2a"]
+  azs                 = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
   owner               = "baz"
   environment         = "prod"
   app                 = "ubuntu-packer-apache"  
@@ -15,10 +16,12 @@ module "demo_prod_ubuntu_ec2" {
 
   node_count        = local.node_count
   azs               = local.azs
-  #aws_subnet_id     = data.aws_subnet_ids.default.ids          # lookup the default subnet ids - use this option when not specifying the private_ips in the vpc subnets
-  aws_subnet_id     = "subnet-c18c0fbb"                         # ensure this subnet is associated with the availability zone specified in azs.local
-  private_ips       = ["172.31.16.60", "172.31.16.61"]          # within range of subnet-c18c0fbb - number must match node_count - for use via private hosted zone leakespeake.com
-  machine_ami       = data.aws_ami.packer-ubuntu-docker-ce.id   # use own packer template for prod services (with docker-ce baked in)
+  
+  #aws_subnet_id     = element(data.aws_subnet_ids.default.ids, count.index)
+  aws_subnet_id     = data.aws_subnet_ids.default.ids
+  #aws_subnet_id     = "subnet-c18c0fbb"                         # ensure this subnet is associated with the availability zone specified in azs.local
+  #private_ips       = ["172.31.16.60", "172.31.16.61"]          # within range of subnet-c18c0fbb - must match node_count
+  machine_ami       = data.aws_ami.packer-ubuntu-docker-ce.id
   aws_instance_type = "t2.micro"
   key_name          = "dem-keys-2020"
   user_data         = templatefile("${path.module}/bootstrap-${var.os_distro}.${var.file_ext}", {access_port = var.access_port, service_port1 = var.service_port1, docker_api_port = var.docker_api_port})
@@ -75,25 +78,25 @@ module "demo_prod_r53_record-01" {
   dns_domain  = "leakespeake.com"
 }
 
-# module "demo_prod_r53_record-02" {
-#   source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/route53records"
-#   #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=7a86974"
+module "demo_prod_r53_record-02" {
+  source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/route53records"
+  #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/route53records?ref=7a86974"
 
-#   record_data = module.demo_prod_eip[*].elastic_address[1]
-#   node_name   = "ubuntu-packer-apache-02"
-#   type        = "A"
-#   ttl         = 300
-#   dns_domain  = "leakespeake.com"
-# }
+  record_data = module.demo_prod_eip[*].elastic_address[1]
+  node_name   = "ubuntu-packer-apache-02"
+  type        = "A"
+  ttl         = 300
+  dns_domain  = "leakespeake.com"
+}
 
 
 # ELASTIC BLOCK STORE (EBS) VOLUME CREATION
 module "demo_prod_ebs" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=7a86974"
+  source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/ebs"
+  #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs?ref=7a86974"
 
   node_count      = local.node_count
   azs             = local.azs
-
   ebs_volume_size = 5
 
   owner           = local.owner
@@ -104,7 +107,8 @@ module "demo_prod_ebs" {
 
 # ELASTIC BLOCK STORE (EBS) ATTACHMENT
 module "demo_prod_ebs_att" {
-  source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=7a86974"
+  source = "C:/Users/barry/Documents/github-leakespeake/terraform-reusable-modules/aws/ebs_att"
+  #source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ebs_att?ref=7a86974"
 
   node_count    = local.node_count
   volume_ids    = module.demo_prod_ebs.volume_id

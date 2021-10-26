@@ -2,7 +2,7 @@
 # As such we must specify either the individual index in the array [0],[1],[2] or use the [*] splat expression to output all values
 
 output "image_id" {
- value       = data.aws_ami.packer-ubuntu-docker-ce.id
+ value = data.aws_ami.packer-ubuntu-docker-ce.id
 }
 
 output "instance_ids" {
@@ -21,9 +21,9 @@ output "hostnames01" {
  value = module.demo_prod_r53_record-01.hostnames
 }
 
-# output "hostnames02" {
-#  value = module.demo_prod_r53_record-02.hostnames
-# }
+output "hostnames02" {
+ value = module.demo_prod_r53_record-02.hostnames
+}
 
 output "volume_id" {
  value = module.demo_prod_ebs.volume_id
