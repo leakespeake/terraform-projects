@@ -9,7 +9,7 @@ module "prometheus-prd" {
 
   cpus              = 2
 
-  disk1_size        = 40
+  disk1_size        = 30
 
   network           = "10.1.1.0/24_prd"
   
