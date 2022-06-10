@@ -14,6 +14,7 @@ module "php-ipam-prd" {
 
 # DOCKER CONTAINER MODULE
 # sudo ufw allow from {PROMETHEUS_IP} to any port 8080 proto tcp
+# cannot add 'depends_on' to docker provider so comment out until VM deployed or use 'tf plan -target=module.{module-name}'
 module "docker-cadvisor" {
     source = "git@github.com:leakespeake/terraform-reusable-modules.git//docker-containers/cadvisor?ref=0bf8c20"
     docker_host       = "php-ipam-prd-01.int.leakespeake.com"
