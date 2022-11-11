@@ -1,6 +1,6 @@
 ![tf](https://user-images.githubusercontent.com/45919758/85199891-dc84bf00-b2ea-11ea-8526-683ae893fe50.png)
 # terraform-projects
-Various projects deployed via Terraform to vSphere, AWS and GCP. 
+Various projects deployed via Terraform to vSphere home lab and AWS. 
 
 Each project module, whether stage or prod, calls its associated *source module* via the **terraform-reusable-modules** repository. This source repo uses tags that reflect the version of Terraform that it is currently compatible for. These tags can be used as the source ref our **terraform-projects** root modules - for example;
 
