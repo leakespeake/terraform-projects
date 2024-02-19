@@ -42,7 +42,7 @@ pipeline {
         stage('Format') {
             steps {            
                 dir('modules/vsphere/stage/services/jenkins-test-vm'){
-                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
+                    sh "terraform fmt"
                 }
             }
         }               
