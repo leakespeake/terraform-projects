@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+
+    tools {
+        "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform"
+    }
+
+    parameters {
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+    } 
+    
+    environment {
+        TF_HOME = tool('terraform')
+        TF_IN_AUTOMATION = "TRUE"
+        TF_INPUT = "FALSE"
+        TF_LOG = "WARN"
+        PATH = "$TF_HOME:$PATH"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                 script{
+                        dir("modules/vsphere/stage/services/jenkins-test-vm")
+                        {
+                            git "https://github.com/leakespeake/terraform-projects.git"
+                        }
+                    }
+                }
+            }
+        stage('Init') {
+            steps {
+                dir("modules/vsphere/stage/services/jenkins-test-vm")
+                {
+                    sh "terraform init"
+                    sh "terraform version"
+                    sh "echo \$PWD"
+                    sh "whoami"                    
+                }
+            }
+        }     
+        stage('Format') {
+            steps {            
+                dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    sh "terraform fmt -list=true -write=false -diff=true -check=true"
+                }
+            }
+        }               
+        stage('Validate') {
+            steps {
+                dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    sh "terraform validate"
+                }
+            }
+        }
+        stage('Plan') {
+            steps {
+                withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
+                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                        sh "terraform plan -out tfplan"
+                        sh "terraform show -no-color tfplan > tfplan.txt"
+                    }
+                }    
+           }
+        }
+        stage('Approval') {
+            when {
+                not {
+                    equals expected: true, actual: params.autoApprove
+                }
+            }
+           steps {
+                withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
+                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                        script {
+                            def plan = readFile "tfplan.txt"
+                            input message: "Do you want to apply the Terraform plan?",
+                            parameters: [text(name: 'Plan', description: 'Please review the Terraform plan', defaultValue: plan)]
+                        }
+                    }
+                }    
+            }
+        }    
+        stage('Apply') {
+            steps {
+                withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
+                    sh "terraform apply tfplan.txt"
+                }    
+            }
+        }
+    }
+}   
