@@ -85,7 +85,7 @@ pipeline {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir('modules/vsphere/stage/services/jenkins-test-vm'){
-                        sh "terraform apply tfplan.txt"
+                        sh "terraform apply tfplan"
                     }
                 }      
             }
