@@ -1,6 +1,7 @@
 # VIRTUAL MACHINE MODULE
 module "jenkins-test" {
-  source           = "git@github.com:leakespeake/terraform-reusable-modules.git//vsphere/template-cloning/linux/ubuntu-server-22-04?ref=2670890"
+  source           = "github.com/leakespeake/terraform-reusable-modules//vsphere/template-cloning/linux/ubuntu-server-22-04?ref=2670890"
+  //source           = "git@github.com:leakespeake/terraform-reusable-modules.git//vsphere/template-cloning/linux/ubuntu-server-22-04?ref=2670890"
   vcenter_password = var.vcenter_password // passed via Vault Secret Text Credential binding
   vmname           = "jenkins-test"
   memory           = 1024
