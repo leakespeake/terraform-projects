@@ -18,16 +18,16 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                 script{
-                        dir("modules/vsphere/stage/services/jenkins-test-vm")
-                        {
-                            git "https://github.com/leakespeake/terraform-projects.git"
-                        }
-                    }
-                }
-            }
+        // stage('Checkout Code') {
+        //     steps {
+        //          script{
+        //                 dir("modules/vsphere/stage/services/jenkins-test-vm")
+        //                 {
+        //                     git "https://github.com/leakespeake/terraform-projects.git"
+        //                 }
+        //             }
+        //         }
+        //     }
         stage('Init') {
             steps {
                 dir("modules/vsphere/stage/services/jenkins-test-vm")
