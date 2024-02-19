@@ -84,7 +84,7 @@ pipeline {
         stage('Apply') {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    sh "terraform apply tfplan.txt"
+                    sh "terraform apply tfplan"
                 }    
             }
         }
