@@ -12,7 +12,7 @@ module "jenkins-test" {
   template         = "ubuntu-server-22-04-20220602T140217Z"
   # optionally create an additional 25GB disk1 to accompany the 15GB root disk0 
   # set boolean to 'true' after initial disk0 deployment - vsphere_virtual_machine resource is updated in-place
-  disk1_create     = false
+  disk1_create     = true
 }
 
 # DOCKER CONTAINER MODULE
