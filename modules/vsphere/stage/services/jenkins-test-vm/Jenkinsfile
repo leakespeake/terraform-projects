@@ -39,17 +39,11 @@ pipeline {
                     sh "whoami"                    
                 }
             }
-        }     
-        stage('Format') {
-            steps {            
-                dir('modules/vsphere/stage/services/jenkins-test-vm'){
-                    sh "terraform fmt"
-                }
-            }
-        }               
+        }                
         stage('Validate') {
             steps {
                 dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    sh "terraform fmt"
                     sh "terraform validate"
                 }
             }
@@ -58,8 +52,8 @@ pipeline {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir('modules/vsphere/stage/services/jenkins-test-vm'){
-                        sh "terraform plan -out tfplan"
-                        sh "terraform show tfplan > tfplan.txt"
+                        sh "terraform plan -no-color -out tfplan"
+                        sh "terraform show -no-color tfplan > tfplan.txt"
                     }
                 }    
            }
@@ -100,8 +94,8 @@ pipeline {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir('modules/vsphere/stage/services/jenkins-test-vm'){
-                        sh "terraform plan -destroy -out=tfplan"
-                        sh "terraform show tfplan > tfplan.txt"
+                        sh "terraform plan -no-color -destroy -out=tfplan"
+                        sh "terraform show -no-color tfplan > tfplan.txt"
                     }
                 }      
             }
