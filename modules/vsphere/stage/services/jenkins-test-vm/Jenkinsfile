@@ -7,6 +7,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+        booleanParam(name: 'invokeDestroy', defaultValue: false, description: 'Invoke the destroy stages of the pipeline?')
     } 
     
     environment {
@@ -58,7 +59,7 @@ pipeline {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir('modules/vsphere/stage/services/jenkins-test-vm'){
                         sh "terraform plan -out tfplan"
-                        sh "terraform show -no-color tfplan > tfplan.txt"
+                        sh "terraform show tfplan > tfplan.txt"
                     }
                 }    
            }
@@ -90,5 +91,34 @@ pipeline {
                 }      
             }
         }
+        stage('Preview Destroy') {
+            when {
+                not {
+                    equals expected: true, actual: params.invokeDestroy
+                }
+            }            
+            steps {
+                withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
+                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                        sh "terraform plan -destroy -out=tfplan"
+                        sh "terraform show tfplan > tfplan.txt"
+                    }
+                }      
+            }
+        }        
+        stage('Destroy') {
+           steps {
+                withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
+                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                        script {
+                            def plan = readFile "tfplan.txt"
+                            input message: "Do you want to proceed with the Terraform destroy?",
+                            parameters: [text(name: 'Plan', description: 'Please review the Terraform plan', defaultValue: plan)]
+                        }
+                        sh "terraform apply -destroy"
+                    }
+                }    
+            }
+        }   
     }
 }
