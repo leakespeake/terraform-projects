@@ -88,7 +88,7 @@ pipeline {
         stage('Preview Destroy') {
             when {
                 not {
-                    equals expected: true, actual: params.invokeDestroy
+                    equals expected: false, actual: params.invokeDestroy
                 }
             }            
             steps {
