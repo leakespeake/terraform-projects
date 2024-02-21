@@ -104,7 +104,7 @@ pipeline {
                             input message: "Do you want to proceed with the Terraform destroy?",
                             parameters: [text(name: 'Plan', description: 'Please review the Terraform plan', defaultValue: plan)]
                         }
-                        sh "terraform apply -destroy"
+                        sh "terraform apply -no-color -destroy -auto-approve"
                     }
                 }    
             }
