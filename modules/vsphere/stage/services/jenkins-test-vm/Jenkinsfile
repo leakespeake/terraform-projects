@@ -19,16 +19,6 @@ pipeline {
     }
 
     stages {
-        // stage('Checkout Code') {
-        //     steps {
-        //          script{
-        //                 dir("modules/vsphere/stage/services/jenkins-test-vm")
-        //                 {
-        //                     git "https://github.com/leakespeake/terraform-projects.git"
-        //                 }
-        //             }
-        //         }
-        //     }
         stage('Init') {
             steps {
                 dir("modules/vsphere/stage/services/jenkins-test-vm")
@@ -58,7 +48,7 @@ pipeline {
                 }    
            }
         }
-        stage('Approval') {
+        stage('Approve') {
             when {
                 not {
                     equals expected: true, actual: params.autoApprove
@@ -101,6 +91,11 @@ pipeline {
             }
         }        
         stage('Destroy') {
+            when {
+                not {
+                    equals expected: false, actual: params.invokeDestroy
+                }
+            }             
            steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir('modules/vsphere/stage/services/jenkins-test-vm'){
