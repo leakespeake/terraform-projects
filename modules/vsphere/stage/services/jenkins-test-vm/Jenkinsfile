@@ -16,13 +16,13 @@ pipeline {
         TF_INPUT = "FALSE"
         TF_LOG = "WARN"
         PATH = "$TF_HOME:$PATH"
+        VM_NAME = "jenkins-test-vm" // add virtual machine name to form directory path
     }
 
     stages {
         stage('Init') {
             steps {
-                dir("modules/vsphere/stage/services/jenkins-test-vm")
-                {
+                dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                     sh "terraform init"
                     sh "terraform version"
                     sh "echo \$PWD"
@@ -32,7 +32,7 @@ pipeline {
         }                
         stage('Validate') {
             steps {
-                dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                     sh "terraform fmt"
                     sh "terraform validate"
                 }
@@ -41,7 +41,7 @@ pipeline {
         stage('Plan') {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                         sh "terraform plan -no-color -out tfplan"
                         sh "terraform show -no-color tfplan > tfplan.txt"
                     }
@@ -56,7 +56,7 @@ pipeline {
             }
            steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                         script {
                             def plan = readFile "tfplan.txt"
                             input message: "Do you want to apply the Terraform plan?",
@@ -69,7 +69,7 @@ pipeline {
         stage('Apply') {
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                         sh "terraform apply tfplan"
                     }
                 }      
@@ -83,7 +83,7 @@ pipeline {
             }            
             steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                         sh "terraform plan -no-color -destroy -out=tfplan"
                         sh "terraform show -no-color tfplan > tfplan.txt"
                     }
@@ -98,7 +98,7 @@ pipeline {
             }             
            steps {
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
-                    dir('modules/vsphere/stage/services/jenkins-test-vm'){
+                    dir("modules/vsphere/stage/services/${env.VM_NAME}"){
                         script {
                             def plan = readFile "tfplan.txt"
                             input message: "Do you want to proceed with the Terraform destroy?",
