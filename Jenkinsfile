@@ -20,7 +20,7 @@ pipeline {
         PATH = "$TF_HOME:$PATH"
         // terraform .tf file location
         DIR_PATH = "modules/vsphere/stage/services"     // add repository directory path
-        VM_NAME = "terraform-test-vm"                   // add vm name to complete directory path
+        VM_NAME = "jenkins-test-vm"                     // add vm name to complete directory path
     }
 
     stages {
