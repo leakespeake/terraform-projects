@@ -9,9 +9,18 @@ module "demo_prod_ubuntu_ec2" {
   source = "git@github.com:leakespeake/terraform-reusable-modules.git//aws/ec2?ref=v.0.14.2"
 ```
 Deployment code in this repo, whether stage or production, have an immediate visual reference to the Terraform version they were written for at the last commit.
-___
 
-**Directory Structure**
+## Jenkins
+We use the **Jenkinsfile** in this directory to deploy new VMs with Terraform. The groovy is parametized so that we can elect to auto approve the `tfplan` or we can elect to run the destroy pipeline stages to remove our resources.
+
+Once our new `.tf` files are commited to this repo - simply change the Jenkinsfile environment variables below, so Jenkins can run Terraform commands within the correct directory;
+
+```
+        DIR_PATH = "modules/vsphere/stage/services"     // add repository directory path
+        VM_NAME = "terraform-test-vm"                   // add vm name to complete directory path
+```
+
+## Directory Structure
 
 The module directories are organised in the following way to achieve full isolation between environments;
 
@@ -28,6 +37,3 @@ The module directories are organised in the following way to achieve full isolat
 - modules > {provider name} > {environment type} > **datastores** (mysql, redis etc) > main.tf
 
 - modules > {provider name} > **global** (s3, iam etc - for resources used across all environments within the provider) 
-
-___
-
