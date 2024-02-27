@@ -1,16 +1,18 @@
 pipeline {
     agent any
 
+    // define tools to auto-install and put on the PATH
     tools {
         "org.jenkinsci.plugins.terraform.TerraformInstallation" "terraform"
     }
 
-    // will appear within 'Build with Parameters' to select the desired options prior to running the build
+    // will appear within 'Build with Parameters' to select the desired options prior to running the build - access via the 'params' object
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
         booleanParam(name: 'invokeDestroy', defaultValue: false, description: 'Invoke the destroy stages of the pipeline?')
     } 
     
+    // access variable values throughout the pipeline via the 'env' object - "${env.VARIABLE_NAME}"
     environment {
         // terraform specific variables for automation
         TF_HOME = tool('terraform')
@@ -44,6 +46,7 @@ pipeline {
         }
         stage('Plan') {
             steps {
+                // load our Vault sourced secret value directly into the TF_VAR_ Terraform environment variable
                 withCredentials([vaultString(credentialsId: 'vcenter_password', variable: 'TF_VAR_vcenter_password')]) {
                     dir("${env.DIR_PATH}/${env.VM_NAME}"){
                         sh "terraform plan -no-color -out tfplan"
